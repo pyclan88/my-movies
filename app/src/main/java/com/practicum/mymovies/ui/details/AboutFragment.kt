@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import com.practicum.mymovies.R
 import com.practicum.mymovies.databinding.FragmentAboutBinding
 import com.practicum.mymovies.domain.models.MovieDetails
 import com.practicum.mymovies.presentation.details.AboutState
 import com.practicum.mymovies.presentation.details.AboutViewModel
-import com.practicum.mymovies.ui.cast.MoviesCastActivity
+import com.practicum.mymovies.ui.cast.MoviesCastFragment
 import com.practicum.mymovies.util.invisible
 import com.practicum.mymovies.util.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,12 +46,16 @@ class AboutFragment : Fragment() {
         }
 
         binding.showCastButton.setOnClickListener {
-            startActivity(
-                MoviesCastActivity.newInstance(
-                    context = requireActivity(),
-                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+            parentFragment?.parentFragmentManager?.commit {
+                replace(
+                    R.id.rootFragmentContainerView,
+                    MoviesCastFragment.newInstance(
+                        movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+                    ),
+                    MoviesCastFragment.TAG
                 )
-            )
+                addToBackStack(MoviesCastFragment.TAG)
+            }
         }
     }
 
