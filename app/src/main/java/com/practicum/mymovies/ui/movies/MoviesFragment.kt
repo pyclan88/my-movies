@@ -1,5 +1,6 @@
 package com.practicum.mymovies.ui.movies
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,9 +9,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.mymovies.R
 import com.practicum.mymovies.databinding.FragmentMoviesBinding
@@ -30,17 +33,13 @@ class MoviesFragment : Fragment() {
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    parentFragmentManager.commit {
-                        replace(
-                            R.id.rootFragmentContainerView,
-                            DetailsFragment.newInstance(
-                                movieId = movie.id,
-                                poster = movie.image,
-                            ),
-                            DetailsFragment.TAG
+                    findNavController().navigate(
+                        R.id.action_moviesFragment_to_detailsFragment,
+                        DetailsFragment.createArgs(
+                            movieId = movie.id,
+                            poster = movie.image,
                         )
-                        addToBackStack(DetailsFragment.TAG)
-                }
+                    )
                 }
             }
 
@@ -92,6 +91,8 @@ class MoviesFragment : Fragment() {
 
         moviesViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.queryInput.windowToken, 0)
         }
 
         moviesViewModel.observeShowToast().observe(viewLifecycleOwner) { toast ->

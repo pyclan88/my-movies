@@ -1,6 +1,6 @@
 [versions]
 adapterdelegates4KotlinDsl = "4.3.2"
-agp = "8.5.1"
+agp = "8.5.2"
 fragmentKtx = "1.8.2"
 koinAndroid = "3.3.0"
 kotlin = "1.9.0"
@@ -15,6 +15,7 @@ constraintlayout = "2.1.4"
 glide = "5.0.0-rc01"
 gson = "2.10.1"
 moxyVersion = "2.2.2"
+navigationFragmentKtx = "2.7.7"
 retrofit = "2.11.0"
 converterGson = "2.11.0"
 viewpager2 = "1.1.0"
@@ -24,6 +25,8 @@ adapterdelegates4-kotlin-dsl = { module = "com.hannesdorfmann:adapterdelegates4-
 adapterdelegates4-kotlin-dsl-viewbinding = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding", version.ref = "adapterdelegates4KotlinDsl" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationFragmentKtx" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

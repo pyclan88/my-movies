@@ -51,16 +51,11 @@ class DetailsFragment : Fragment() {
         private const val ARGS_MOVIE_ID = "MOVIE_ID_KEY"
         private const val ARGS_POSTER_URL = "POSTER_KEY"
 
-        const val TAG = "DetailsFragment"
-
-        fun newInstance(movieId: String, poster: String): Fragment {
-            return DetailsFragment().apply {
-                arguments = bundleOf(
-                    ARGS_MOVIE_ID to movieId,
-                    ARGS_POSTER_URL to poster
-                )
-            }
-        }
+        fun createArgs(movieId: String, poster: String): Bundle =
+            bundleOf(
+                ARGS_MOVIE_ID to movieId,
+                ARGS_POSTER_URL to poster
+            )
     }
 
 }

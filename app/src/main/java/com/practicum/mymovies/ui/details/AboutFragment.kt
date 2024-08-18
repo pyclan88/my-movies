@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.navigation.fragment.findNavController
 import com.practicum.mymovies.R
 import com.practicum.mymovies.databinding.FragmentAboutBinding
 import com.practicum.mymovies.domain.models.MovieDetails
@@ -46,16 +47,12 @@ class AboutFragment : Fragment() {
         }
 
         binding.showCastButton.setOnClickListener {
-            parentFragment?.parentFragmentManager?.commit {
-                replace(
-                    R.id.rootFragmentContainerView,
-                    MoviesCastFragment.newInstance(
-                        movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-                    ),
-                    MoviesCastFragment.TAG
+            findNavController().navigate(
+                R.id.action_detailsFragment_to_moviesCastFragment,
+                MoviesCastFragment.createArgs(
+                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
                 )
-                addToBackStack(MoviesCastFragment.TAG)
-            }
+            )
         }
     }
 
