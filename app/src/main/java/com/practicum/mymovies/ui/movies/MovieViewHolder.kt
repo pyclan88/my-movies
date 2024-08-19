@@ -18,7 +18,7 @@ class MovieViewHolder(
 ) {
 
     private var cover: ImageView = itemView.findViewById(R.id.cover)
-    private var title: TextView = itemView.findViewById(R.id.titleValue)
+    private var title: TextView = itemView.findViewById(R.id.name)
     private var description: TextView = itemView.findViewById(R.id.description)
     private var inFavoriteToggle: ImageView = itemView.findViewById(R.id.favorite)
 

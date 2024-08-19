@@ -3,6 +3,7 @@ package com.practicum.mymovies.domain.api
 import com.practicum.mymovies.domain.models.Movie
 import com.practicum.mymovies.domain.models.MovieDetails
 import com.practicum.mymovies.domain.models.MovieCast
+import com.practicum.mymovies.domain.models.Person
 
 interface MoviesInteractor {
 
@@ -19,7 +20,7 @@ interface MoviesInteractor {
     }
 
     interface MovieCastConsumer {
-        fun  consume(movieCast: MovieCast?, errorMessage: String?)
+        fun consume(movieCast: MovieCast?, errorMessage: String?)
     }
 
     fun addMovieToFavorites(movie: Movie)
