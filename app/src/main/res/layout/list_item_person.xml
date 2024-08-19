@@ -4,20 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:background="#eeeeee"
+    android:background="#EEEEEE"
     android:orientation="horizontal"
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/cover"
-        android:layout_width="120dp"
-        android:layout_height="180dp"
+        android:id="@+id/photo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="8dp"
         android:scaleType="centerCrop"
-        tools:src="@drawable/ic_launcher_background" />
+        tools:src="@tools:sample/avatars" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
@@ -28,7 +30,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
-            tools:text="TITLE" />
+            tools:text="@tools:sample/full_names" />
 
         <TextView
             android:id="@+id/description"
@@ -39,15 +41,8 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="italic"
-            tools:text="DESCRIPTION" />
-
-        <ImageView
-            android:id="@+id/favorite"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            tools:src="@drawable/active_favorite" />
+            tools:text="@tools:sample/lorem" />
 
     </LinearLayout>
+
 </LinearLayout>

@@ -7,6 +7,7 @@ import com.practicum.mymovies.data.NetworkClient
 import com.practicum.mymovies.data.dto.MovieDetailsRequest
 import com.practicum.mymovies.data.dto.MovieCastRequest
 import com.practicum.mymovies.data.dto.MoviesSearchRequest
+import com.practicum.mymovies.data.dto.NamesSearchRequest
 import com.practicum.mymovies.data.dto.Response
 
 class RetrofitNetworkClient(
@@ -15,26 +16,20 @@ class RetrofitNetworkClient(
 ) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
-        if (isConnected() == false) {
+        if (!isConnected()) {
             return Response().apply { resultCode = -1 }
-        }
-
-        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest)) {
-            return Response().apply { resultCode = 400 }
         }
 
         val response = when (dto) {
             is MoviesSearchRequest -> imdbService.searchMovies(dto.expression).execute()
             is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
-            else -> imdbService.getFullCast((dto as MovieCastRequest).movieId).execute()
+            is NamesSearchRequest -> imdbService.searchNames(dto.expression).execute()
+            is MovieCastRequest -> imdbService.getFullCast(dto.movieId).execute()
+            else -> return Response().apply { resultCode = 400 }
         }
 
         val body = response.body()
-        return if (body != null) {
-            body.apply { resultCode = response.code() }
-        } else {
-            Response().apply { resultCode = response.code() }
-        }
+        return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
     }
 
     private fun isConnected(): Boolean {

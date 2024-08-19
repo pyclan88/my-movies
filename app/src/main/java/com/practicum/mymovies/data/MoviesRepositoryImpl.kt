@@ -7,10 +7,13 @@ import com.practicum.mymovies.data.dto.MovieCastRequest
 import com.practicum.mymovies.data.dto.MovieCastResponse
 import com.practicum.mymovies.data.dto.MoviesSearchRequest
 import com.practicum.mymovies.data.dto.MoviesSearchResponse
+import com.practicum.mymovies.data.dto.NamesSearchRequest
+import com.practicum.mymovies.data.dto.NamesSearchResponse
 import com.practicum.mymovies.domain.api.MoviesRepository
 import com.practicum.mymovies.domain.models.Movie
 import com.practicum.mymovies.domain.models.MovieDetails
 import com.practicum.mymovies.domain.models.MovieCast
+import com.practicum.mymovies.domain.models.Person
 import com.practicum.mymovies.util.LocalStorage
 import com.practicum.mymovies.util.Resource
 
@@ -78,11 +81,13 @@ class MoviesRepositoryImpl(
             -1 -> {
                 Resource.Error("Проверьте подключение к интернету")
             }
+
             200 -> {
-                    Resource.Success(
-                        data = movieCastConverter.convert(response as MovieCastResponse)
-                    )
+                Resource.Success(
+                    data = movieCastConverter.convert(response as MovieCastResponse)
+                )
             }
+
             else -> {
                 Resource.Error("Ошибка сервера")
             }
