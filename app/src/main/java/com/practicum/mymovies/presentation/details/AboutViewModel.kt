@@ -3,8 +3,10 @@ package com.practicum.mymovies.presentation.details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.mymovies.domain.api.MoviesInteractor
 import com.practicum.mymovies.domain.models.MovieDetails
+import kotlinx.coroutines.launch
 
 class AboutViewModel(
     private val movieId: String,
@@ -15,16 +17,21 @@ class AboutViewModel(
     fun observeState(): LiveData<AboutState> = stateLiveData
 
     init {
-        moviesInteractor.getMovieDetails(movieId, object : MoviesInteractor.MoviesDetailsConsumer {
-            override fun consume(movieDetails: MovieDetails?, errorMessage: String?) {
-                if (movieDetails != null) {
-                    stateLiveData.postValue(AboutState.Content(movieDetails))
-                } else {
-                    stateLiveData.postValue(AboutState.Error(errorMessage ?: "Unknown error"))
+        viewModelScope.launch {
+            moviesInteractor
+                .getMovieDetails(movieId)
+                .collect { pair ->
+                    processResult(pair.first, pair.second)
                 }
-            }
         }
-        )
+    }
+
+    private fun processResult(movieDetails: MovieDetails?, errorMessage: String?) {
+        if (movieDetails != null) {
+            stateLiveData.postValue(AboutState.Content(movieDetails))
+        } else {
+            stateLiveData.postValue(AboutState.Error(errorMessage ?: "Unknown error"))
+        }
     }
 
 }

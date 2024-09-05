@@ -2,8 +2,6 @@ package com.practicum.mymovies.ui.movies
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -12,7 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.mymovies.R
@@ -21,40 +19,25 @@ import com.practicum.mymovies.domain.models.Movie
 import com.practicum.mymovies.presentation.movies.MoviesState
 import com.practicum.mymovies.presentation.movies.MoviesViewModel
 import com.practicum.mymovies.ui.details.DetailsFragment
-import com.practicum.mymovies.util.invisible
-import com.practicum.mymovies.util.visible
+import com.practicum.mymovies.ui.root.RootActivity
+import com.practicum.mymovies.utils.debounce
+import com.practicum.mymovies.utils.invisible
+import com.practicum.mymovies.utils.visible
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
 
     private val moviesViewModel by viewModel<MoviesViewModel>()
 
-    private val adapter = MoviesAdapter(
-        object : MoviesAdapter.MovieClickListener {
-            override fun onMovieClick(movie: Movie) {
-                if (clickDebounce()) {
-                    findNavController().navigate(
-                        R.id.action_moviesFragment_to_detailsFragment,
-                        DetailsFragment.createArgs(
-                            movieId = movie.id,
-                            poster = movie.image,
-                        )
-                    )
-                }
-            }
-
-            override fun onFavoriteToggleClick(movie: Movie) {
-                moviesViewModel.toggleFavorite(movie)
-            }
-
-        }
-    )
-
-    private val handler = Handler(Looper.getMainLooper())
+    private var adapter: MoviesAdapter? = null
 
     private lateinit var binding: FragmentMoviesBinding
 
     private lateinit var textWatcher: TextWatcher
+
+    private lateinit var onMovieClickDebounce: (Movie) -> Unit
 
     private var isClickAllowed = true
 
@@ -70,6 +53,31 @@ class MoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        onMovieClickDebounce = debounce<Movie>(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { movie ->
+            findNavController().navigate(
+                R.id.action_moviesFragment_to_detailsFragment,
+                DetailsFragment.createArgs(movieId = movie.id, poster = movie.image)
+            )
+        }
+
+        adapter = MoviesAdapter(
+            object : MoviesAdapter.MovieClickListener {
+                override fun onMovieClick(movie: Movie) {
+                    (activity as RootActivity).animateBottomNavigationView()
+                    onMovieClickDebounce(movie)
+                }
+
+                override fun onFavoriteToggleClick(movie: Movie) {
+                    moviesViewModel.toggleFavorite(movie)
+                }
+
+            }
+        )
+
         binding.moviesList.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         binding.moviesList.adapter = adapter
@@ -78,6 +86,8 @@ class MoviesFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.searchHint.visibility =
+                    if (binding.queryInput.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
                 moviesViewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
@@ -85,6 +95,11 @@ class MoviesFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
 
+        }
+
+        binding.queryInput.setOnFocusChangeListener { _, hasFocus ->
+            binding.searchHint.visibility =
+                if (hasFocus && binding.queryInput.text.isEmpty()) View.VISIBLE else View.GONE
         }
 
         textWatcher.let { binding.queryInput.addTextChangedListener(it) }
@@ -102,6 +117,8 @@ class MoviesFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter = null
+        binding.moviesList.adapter = null
         textWatcher.let { binding.queryInput.removeTextChangedListener(it) }
     }
 
@@ -129,9 +146,9 @@ class MoviesFragment : Fragment() {
         binding.placeholderMessage.invisible()
         binding.progressBar.invisible()
 
-        adapter.movies.clear()
-        adapter.movies.addAll(movies)
-        adapter.notifyDataSetChanged()
+        adapter?.movies?.clear()
+        adapter?.movies?.addAll(movies)
+        adapter?.notifyDataSetChanged()
     }
 
     private fun showError(errorMessage: String) {
@@ -146,17 +163,8 @@ class MoviesFragment : Fragment() {
         showError(emptyMessage)
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 300L
     }
 
 }

@@ -6,8 +6,8 @@ import com.practicum.mymovies.core.ui.RVItem
 import com.practicum.mymovies.databinding.ListItemCastBinding
 import com.practicum.mymovies.databinding.ListItemHeaderBinding
 import com.practicum.mymovies.presentation.cast.MoviesCastRVItem
-import com.practicum.mymovies.util.invisible
-import com.practicum.mymovies.util.visible
+import com.practicum.mymovies.utils.invisible
+import com.practicum.mymovies.utils.visible
 
 fun movieCastHeaderDelegate() =
     adapterDelegateViewBinding<MoviesCastRVItem.HeaderItem, RVItem, ListItemHeaderBinding>(
@@ -24,12 +24,12 @@ fun movieCastPersonDelegate() =
     ) {
         bind {
             if (item.data.image == null) {
-                binding.actorImageView.invisible()
+                binding.photo.invisible()
             } else {
                 Glide.with(itemView)
                     .load(item.data.image)
-                    .into(binding.actorImageView)
-                binding.actorImageView.visible()
+                    .into(binding.photo)
+                binding.photo.visible()
             }
 
             binding.actorNameTextView.text = item.data.name

@@ -15,8 +15,8 @@ import com.practicum.mymovies.databinding.FragmentNamesBinding
 import com.practicum.mymovies.domain.models.Person
 import com.practicum.mymovies.presentation.names.NamesState
 import com.practicum.mymovies.presentation.names.NamesViewModel
-import com.practicum.mymovies.util.invisible
-import com.practicum.mymovies.util.visible
+import com.practicum.mymovies.utils.invisible
+import com.practicum.mymovies.utils.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NamesFragment : Fragment() {

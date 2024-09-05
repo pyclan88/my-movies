@@ -11,8 +11,8 @@ import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.practicum.mymovies.databinding.FragmentMoviesCastBinding
 import com.practicum.mymovies.presentation.cast.MovieCastViewModel
 import com.practicum.mymovies.presentation.cast.MoviesCastState
-import com.practicum.mymovies.util.invisible
-import com.practicum.mymovies.util.visible
+import com.practicum.mymovies.utils.invisible
+import com.practicum.mymovies.utils.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
