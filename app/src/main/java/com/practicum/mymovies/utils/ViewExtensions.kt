@@ -1,4 +1,4 @@
-package com.practicum.mymovies.util
+package com.practicum.mymovies.utils
 
 import android.view.View
 

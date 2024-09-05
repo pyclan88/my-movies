@@ -9,27 +9,37 @@ import com.practicum.mymovies.data.dto.MovieCastRequest
 import com.practicum.mymovies.data.dto.MoviesSearchRequest
 import com.practicum.mymovies.data.dto.NamesSearchRequest
 import com.practicum.mymovies.data.dto.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(
     private val imdbService: IMDbApiService,
     private val context: Context,
 ) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
 
-        val response = when (dto) {
-            is MoviesSearchRequest -> imdbService.searchMovies(dto.expression).execute()
-            is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
-            is NamesSearchRequest -> imdbService.searchNames(dto.expression).execute()
-            is MovieCastRequest -> imdbService.getFullCast(dto.movieId).execute()
-            else -> return Response().apply { resultCode = 400 }
+        return when (dto) {
+            is MoviesSearchRequest -> safeApiCall { imdbService.searchMovies(dto.expression) }
+            is MovieDetailsRequest -> safeApiCall { imdbService.getMovieDetails(dto.movieId) }
+            is MovieCastRequest -> safeApiCall { imdbService.getFullCast(dto.movieId) }
+            is NamesSearchRequest -> safeApiCall { imdbService.searchNames(dto.expression) }
+            else -> Response().apply { resultCode = 400 }
         }
+    }
 
-        val body = response.body()
-        return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
+    private suspend fun <T> safeApiCall(apiCall: suspend () -> T): Response {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiCall() as Response
+                response.apply { resultCode = 200 }
+            } catch (e: Throwable) {
+                Response().apply { resultCode = 500 }
+            }
+        }
     }
 
     private fun isConnected(): Boolean {

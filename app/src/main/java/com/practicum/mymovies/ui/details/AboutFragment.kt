@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.navigation.fragment.findNavController
 import com.practicum.mymovies.R
 import com.practicum.mymovies.databinding.FragmentAboutBinding
@@ -14,8 +12,8 @@ import com.practicum.mymovies.domain.models.MovieDetails
 import com.practicum.mymovies.presentation.details.AboutState
 import com.practicum.mymovies.presentation.details.AboutViewModel
 import com.practicum.mymovies.ui.cast.MoviesCastFragment
-import com.practicum.mymovies.util.invisible
-import com.practicum.mymovies.util.visible
+import com.practicum.mymovies.utils.invisible
+import com.practicum.mymovies.utils.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -68,7 +66,7 @@ class AboutFragment : Fragment() {
         binding.apply {
             details.visible()
             errorMessage.invisible()
-            titleValue.text = movieDetails.title
+            name.text = movieDetails.title
             ratingValue.text = movieDetails.imDbRating
             yearValue.text = movieDetails.year
             countryValue.text = movieDetails.countries

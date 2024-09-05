@@ -7,7 +7,7 @@ import com.practicum.mymovies.data.SearchHistoryStorage
 import com.practicum.mymovies.data.local.SharedPreferencesSearchHistoryStorage
 import com.practicum.mymovies.data.network.IMDbApiService
 import com.practicum.mymovies.data.network.RetrofitNetworkClient
-import com.practicum.mymovies.util.LocalStorage
+import com.practicum.mymovies.utils.LocalStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit

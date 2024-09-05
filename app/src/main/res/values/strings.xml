@@ -17,4 +17,5 @@
     <string name="movies">Movies</string>
     <string name="persons">Persons</string>
     <string name="info">Info</string>
+    <string name="search_hint">Вводите название фильма на английском языке. Можно указать год для более точного поиска.</string>
 </resources>

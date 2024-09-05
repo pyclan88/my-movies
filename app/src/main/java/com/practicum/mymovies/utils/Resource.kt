@@ -1,4 +1,4 @@
-package com.practicum.mymovies.util
+package com.practicum.mymovies.utils
 
 sealed class Resource<T>(val data: T? = null, val message: String? = null) {
     class Success<T>(data: T) : Resource<T>(data)
